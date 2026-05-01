@@ -3,8 +3,10 @@ from models import db, User, Project, Task
 from config import Config
 from werkzeug.security import generate_password_hash, check_password_hash
 
+from flask import Flask
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates", static_folder="static")
+
 app.config.from_object(Config)
 
 db.init_app(app)
