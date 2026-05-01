@@ -3,6 +3,7 @@ from models import db, User, Project, Task
 from config import Config
 from werkzeug.security import generate_password_hash, check_password_hash
 
+
 app = Flask(__name__)
 app.config.from_object(Config)
 
@@ -15,7 +16,6 @@ with app.app_context():
 @app.route('/dashboard')
 def dashboard():
     return render_template("dashboard.html")
-
 @app.route('/')
 def home():
     return render_template("login.html")
@@ -126,5 +126,10 @@ def update_task(id):
 
 # ------------------
 
-if __name__ == '__main__':
-    app.run(debug=True)
+
+
+import os
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
