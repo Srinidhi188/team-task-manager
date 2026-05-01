@@ -2,25 +2,30 @@ from flask import Flask, request, jsonify, render_template
 from models import db, User, Project, Task
 from config import Config
 from werkzeug.security import generate_password_hash, check_password_hash
+import os
 
-from flask import Flask
-
+# ✅ Create app properly (only ONCE)
 app = Flask(__name__, template_folder="templates", static_folder="static")
-
 app.config.from_object(Config)
 
+# ✅ Initialize DB
 db.init_app(app)
 
+# ✅ Create tables safely (important for Railway)
 with app.app_context():
     db.create_all()
 
 # ------------------ ROUTES ------------------
-@app.route('/dashboard')
-def dashboard():
-    return render_template("dashboard.html")
+
 @app.route('/')
 def home():
     return render_template("login.html")
+
+
+@app.route('/dashboard')
+def dashboard():
+    return render_template("dashboard.html")
+
 
 # Signup
 @app.route('/signup', methods=['POST'])
@@ -41,6 +46,7 @@ def signup():
 
     return jsonify({"message": "User created"})
 
+
 # Login
 @app.route('/login', methods=['POST'])
 def login():
@@ -53,9 +59,11 @@ def login():
             "user_id": user.id,
             "role": user.role
         })
+
     return jsonify({"message": "Invalid credentials"}), 401
 
-# Create Project (Admin only)
+
+# Create Project
 @app.route('/projects', methods=['POST'])
 def create_project():
     data = request.json
@@ -70,16 +78,16 @@ def create_project():
 
     return jsonify({"message": "Project created"})
 
+
 # Get Projects
 @app.route('/projects', methods=['GET'])
 def get_projects():
     projects = Project.query.all()
 
-    result = []
-    for p in projects:
-        result.append({"id": p.id, "name": p.name})
+    return jsonify([
+        {"id": p.id, "name": p.name} for p in projects
+    ])
 
-    return jsonify(result)
 
 # Create Task
 @app.route('/tasks', methods=['POST'])
@@ -98,21 +106,21 @@ def create_task():
 
     return jsonify({"message": "Task created"})
 
+
 # Get Tasks
 @app.route('/tasks', methods=['GET'])
 def get_tasks():
     tasks = Task.query.all()
 
-    result = []
-    for t in tasks:
-        result.append({
+    return jsonify([
+        {
             "id": t.id,
             "title": t.title,
             "status": t.status,
             "deadline": t.deadline
-        })
+        } for t in tasks
+    ])
 
-    return jsonify(result)
 
 # Update Task Status
 @app.route('/tasks/<int:id>', methods=['PUT'])
@@ -120,18 +128,18 @@ def update_task(id):
     data = request.json
 
     task = Task.query.get(id)
-    task.status = data['status']
+    if task:
+        task.status = data['status']
+        db.session.commit()
+        return jsonify({"message": "Updated"})
 
-    db.session.commit()
+    return jsonify({"message": "Task not found"}), 404
 
-    return jsonify({"message": "Updated"})
 
 # ------------------
 
-
-
-import os
-
+# ❌ DO NOT REMOVE THIS
+# Needed for local run only (Railway uses gunicorn)
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))
+    port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
