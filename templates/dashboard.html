@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Team Task Manager</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .section {
+            background: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+
+        input {
+            display: block;
+            margin: 8px 0;
+            padding: 8px;
+            width: 250px;
+        }
+
+        button {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background: #fff;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            box-shadow: 0 0 3px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>Team Task Manager</h1>
+
+<!-- Project Section -->
+<div id="project_section" class="section">
+    <h3>Create Project</h3>
+
+    <label>Project Name:</label>
+    <input id="project_name" placeholder="Enter project name">
+
+    <button onclick="createProject()">Create Project</button>
+</div>
+
+<!-- Task Section -->
+<div class="section">
+    <h3>Create Task</h3>
+
+    <label>Task Title:</label>
+    <input id="task_title" placeholder="Enter task title">
+
+    <label>Assigned User ID:</label>
+    <input id="assigned_to" placeholder="Enter user ID">
+
+    <label>Project ID:</label>
+    <input id="project_id" placeholder="Enter project ID">
+
+    <label>Deadline (YYYY-MM-DD):</label>
+    <input id="deadline" placeholder="2026-05-10">
+
+    <button onclick="createTask()">Create Task</button>
+</div>
+
+<!-- Task List -->
+<div class="section">
+    <h3>Tasks</h3>
+    <ul id="task_list"></ul>
+</div>
+
+<script src="/static/script.js"></script>
+
+<script>
+    let role = localStorage.getItem("role");
+
+    if (role !== "admin") {
+        document.getElementById("project_section").style.display = "none";
+    }
+</script>
+
+</body>
+</html>
+
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+
+<h2>Dashboard</h2>
+
+<div id="project_section">
+    <h3>Create Project</h3>
+    <input id="project_name" placeholder="Project Name">
+    <button onclick="createProject()">Create</button>
+</div>
+
+<h3>Create Task</h3>
+<input id="task_title" placeholder="Task Title">
+<input id="assigned_to" placeholder="Assign User ID">
+<input id="project_id" placeholder="Project ID">
+<input id="deadline" placeholder="Deadline">
+<button onclick="createTask()">Create Task</button>
+
+<h3>Tasks</h3>
+<ul id="task_list"></ul>
+
+<script src="/static/script.js"></script>
+<script>
+let role = localStorage.getItem("role");
+
+if (role !== "admin") {
+    document.getElementById("project_section").style.display = "none";
+}
+</script>
+
+</body>
+</html> -->
